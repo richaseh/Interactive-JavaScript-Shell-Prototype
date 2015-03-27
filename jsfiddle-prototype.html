@@ -22,15 +22,39 @@
     <div class="btn grid" id="button"><b>Run</b></div>
     <script>
       (function() {
-      // Base template of the iframe.
+      // Base template of t he iframe.
       var baseTpl =
           "<!doctype html>\n" +
           "<html>\n\t" +
           "<head>\n\t\t" +
           "</head>\n\t" +
           "<body>\n\t\n\t" +
+          "<h3>Console:</h3>\n" +
+          "<div style=\"padding: 0 5x; margin-bottom: 10px; border: 1px solid black; width: 100%; height: 100px\" id=\"console\"></div>\n" +
           "</body>\n" +
           "</html>";
+
+      var consoleTpl =
+          "var console = {};\n" +
+          "console.log = function(s) {\n" +
+            "var para = document.createElement(\"p\");\n" +
+            "para.style.marginTop = \"5px\";\n" +
+            "para.style.marginBottom = \"5px\";\n" +
+            "var node = document.createTextNode(s);\n" +
+            "para.appendChild(node);\n" +
+            "var consoleDiv = document.getElementById('console');\n" +
+            "consoleDiv.appendChild(para);\n" +
+          "};\n" +
+          "console.error = function(s) {\n" +
+            "var para = document.createElement(\"p\");\n" +
+            "para.style.color = 'red';\n" +
+            "para.style.marginTop = \"5px\";\n" +
+            "para.style.marginBottom = \"5px\";\n" +
+            "var node = document.createTextNode(s);\n" +
+            "para.appendChild(node);\n" +
+            "var consoleDiv = document.getElementById('console');\n" +
+            "consoleDiv.appendChild(para);\n" +
+          "};";
 
       // This function fills the base content of the iframe with that
       // input by the user.
@@ -53,11 +77,14 @@
           css = '<style>' + css + '</style>';
           content = content.replace('</head>', css + '</head>');
        
-         // Javascript - we escape the closing script tag so that the
-         // browser parsing is not messed up.
+          // Javascript - we escape the closing script tag so that the
+          // browser parsing is not messed up.
           js = '<script>' + js + '<\/script>';
           content = content.replace('</body>', js + '</body>');
-       
+    
+          var consoleDiv = '<script>' + consoleTpl + '<\/script>';
+          content = content.replace('<head>', '<head>' + consoleDiv);
+
           return content;
       };
       
@@ -81,7 +108,9 @@
       button.addEventListener('click', function() {
         render()  ;
       });
-
+      
+      // We initially call render so that Console comes.
+      render();
       }());
     </script>
   </body>
